@@ -36,7 +36,7 @@ SELECT authors.au_id, authors.au_lname, authors.au_fname, publishers.pub_name, C
 -- Your output should be ordered based on TOTAL from high to low.
 -- Only output the top 3 best selling authors.
 
-SELECT authors.au_id, authors.au_lname, authors.au_fname, COUNT(sales.ord_num) as COUNT
+SELECT authors.au_id, authors.au_lname, authors.au_fname, SUM(sales.qty) as COUNT
 	FROM authors
     JOIN titleauthor
 		ON authors.au_id = titleauthor.au_id
@@ -53,18 +53,16 @@ SELECT authors.au_id, authors.au_lname, authors.au_fname, COUNT(sales.ord_num) a
 -- Now modify your solution in Challenge 3 so that the output will display all 23 authors instead of the top 3. 
 -- Note that the authors who have sold 0 titles should also appear in your output (ideally display 0 instead of NULL as 
 -- the TOTAL). Also order your results based on TOTAL from high to low.
-SELECT authors.au_id, authors.au_lname, authors.au_fname, COUNT(sales.ord_num) as count
+SELECT authors.au_id, authors.au_lname, authors.au_fname, ifnull(SUM(sales.qty), 0) as quantity
 	FROM authors
-    JOIN titleauthor
+    LEFT JOIN titleauthor
 		ON authors.au_id = titleauthor.au_id
-	JOIN titles
-		ON titleauthor.title_id = titles.title_id
-	JOIN sales
-		ON titles.title_id = sales.title_id
+	LEFT JOIN sales
+		ON titleauthor.title_id = sales.title_id
     
 	GROUP BY authors.au_id
-    ORDER BY count DESC
-    LIMIT 23;
+    ORDER BY quantity DESC;
+
 
 
 	
